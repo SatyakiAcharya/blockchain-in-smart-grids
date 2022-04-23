@@ -1,0 +1,382 @@
+#include<stdio.h>
+#include<stdlib.h>
+int den=2;
+int con=1;
+struct nodeb{
+int id3;
+int diam3;
+int velo3;
+int pow3;
+int c3; // pow=den*dia(input)^2*velo(input)^3*con
+struct nodeb *rit; //pointer variable rit of data type nodeb
+struct nodeb *left;//pointer variable left of data type nodeb
+};
+struct detail{
+int id1;
+int diam1;
+int velo1;
+int pow1;
+int c1;
+};
+struct node{
+int id3;
+int diam3;
+int velo3;
+int pow3;
+int c3;
+struct node *next; //next is a pointer variable of data type node
+};
+struct nodeb *rootb=NULL;
+struct node *root=NULL;
+
+void disp(){
+
+
+struct detail new1;
+FILE *p;
+p=fopen("dat2.txt","a+");
+while(1){
+
+fscanf(p,"%d\t%d\t%d\t%d\t%d",&new1.id1,&new1.diam1,&new1.velo1,&new1.pow1,&new1.c1);
+if(feof(p)){
+break;
+}
+printf("LOCATION ID--%d\tTURBINE DIAMETER--%d\tWIND VELOCITY--%d\tFINAL POWER GENERATED--%d\tpower conserved--%d\n",new1.id1,new1.diam1,new1.velo1,new1.pow1,new1.c1);
+
+
+}
+
+
+fclose(p);
+
+}
+void enter(){
+struct detail new1;
+printf("enter the id\n");
+scanf("%d",&new1.id1);
+printf("enter the turbine diameter\n");
+scanf("%d",&new1.diam1);
+printf("enter the wind velocity\n");
+scanf("%d",&new1.velo1);
+
+
+
+new1.pow1=den*new1.diam1*new1.diam1*new1.velo1*new1.velo1*new1.velo1*con;
+new1.c1=0.3*new1.pow1;
+new1.pow1=new1.pow1-new1.c1;
+FILE*p;
+p=fopen("dat2.txt","a+");
+fprintf(p,"%d\t%d\t%d\t%d\t%d\n",new1.id1,new1.diam1,new1.velo1,new1.pow1,new1.c1);
+fclose(p);
+}
+void rank(){
+struct node *temp3;
+FILE *p;
+p=fopen("dat2.txt","a+");
+struct detail new1;
+struct node *new3;
+while(1){
+
+fscanf(p,"%d\t%d\t%d\t%d\t%d",&new1.id1,&new1.diam1,&new1.velo1,&new1.pow1,&new1.c1);
+if(feof(p)){
+break;
+}
+new3=(struct node*)malloc(sizeof(struct node));
+
+new3->id3=new1.id1;
+new3->pow3=new1.pow1;
+new3->diam3=new1.diam1;
+new3->velo3=new1.velo1;
+new3->c3=new1.c1;
+new3->next=NULL;
+if(root==NULL){
+root=new3;
+temp3=root;
+}
+  else{
+temp3->next=new3;
+temp3=temp3->next;
+}
+}
+fclose(p);
+
+struct node *i,*j;
+int pow,velo,diam,id,c;
+for(i=root;i->next!=NULL;i=i->next){
+for(j=i->next;j!=NULL;j=j->next){
+if(i->pow3<j->pow3){ //sort the power generated,diameter,velocity,location id and power conserved in ascending order by bubble sort technique.
+pow=i->pow3;
+i->pow3=j->pow3;
+j->pow3=pow;
+
+
+diam=i->diam3;
+i->diam3=j->diam3;
+j->diam3=diam;
+
+velo=i->velo3;
+i->velo3=j->velo3;
+j->velo3=velo;
+
+id=i->id3;
+i->id3=j->id3;
+j->id3=id;
+c=i->c3;
+i->c3=j->c3;
+j->c3=c;
+
+}
+}
+}
+
+struct node *tem;
+tem=root;
+while(tem!=NULL){
+printf("LOCATION ID--%d\tTURBINE DIAMETER--%d\tWIND VELOCITY--%d\tFINAL POWER GENERATED--%d\tenergy conserved--%d\n",tem->id3,tem->diam3,tem->velo3,tem->pow3,tem->c3);
+tem=tem->next;
+}
+root=NULL;
+}
+
+
+void printPostorder(struct nodeb* tem)
+{
+FILE*p;
+p=fopen("dat2.txt","a+");
+
+     if (tem == NULL)
+        return;
+ 
+
+     printPostorder(tem->left);
+ 
+     printPostorder(tem->rit);
+ 
+fprintf(p,"%d\t%d\t%d\t%d\t%d\n",tem->id3,tem->diam3,tem->velo3,tem->pow3,tem->c3);
+fclose(p);    
+}
+
+void edit(int id3){
+struct nodeb *temp4;
+rootb=NULL;
+temp4=rootb;
+struct nodeb *p2;
+FILE *p;
+p=fopen("dat2.txt","a+");
+struct detail new1;
+struct nodeb *new3;
+
+while(1){
+
+fscanf(p,"%d\t%d\t%d\t%d\t%d",&new1.id1,&new1.diam1,&new1.velo1,&new1.pow1,&new1.c1);
+if(feof(p)){
+break;
+}
+new3=(struct nodeb*)malloc(sizeof(struct nodeb));
+
+new3->id3=new1.id1;
+new3->pow3=new1.pow1;
+new3->diam3=new1.diam1;
+new3->velo3=new1.velo1;
+new3->c3=new1.c1;
+new3->left=NULL;
+new3->rit=NULL;
+if(rootb==NULL){
+rootb=new3;
+
+}
+else{
+temp4=rootb;
+
+  while(temp4!=NULL){
+  p2=temp4;
+  if(new1.id1>temp4->id3){
+  temp4=temp4->rit;
+  }
+  else{
+  temp4=temp4->left;
+  }
+  }
+ 
+  if(new1.id1>p2->id3){
+  p2->rit=new3;
+ 
+  }
+ else{
+  p2->left=new3;
+ 
+ }
+ 
+}
+
+
+}
+fclose(p);
+
+
+
+
+struct nodeb *temp3;
+temp3=rootb;
+
+if(rootb==NULL){
+printf("no data\n");
+}
+else{
+while(temp3!=NULL){
+
+if(id3==temp3->id3){
+printf("LOCATION ID--%d\tTURBINE DIAMETER--%d\tWIND VELOCITY--%d\tFINAL POWER GENERATED--%d\tconserved power--%d\n",temp3->id3,temp3->diam3,temp3->velo3,temp3->pow3,temp3->c3);
+int x1,x2,x3,x4;
+printf("enter the diameter\n");
+scanf("%d",&x1);
+printf("enter the wind velocity\n");
+scanf("%d",&x2);
+x4=den*x1*x1*x2*x2*x2*con;
+x3=0.3*x4;
+x4=x4-x3;
+temp3->diam3=x1;
+temp3->velo3=x2;
+temp3->pow3=x4;
+temp3->c3=x3;
+break;
+}
+else if(id3>temp3->id3){
+temp3=temp3->rit;
+}
+else if(id3<temp3->id3){
+temp3=temp3->left;
+}
+}
+
+if(temp3==NULL){
+printf("\nData not found\n");
+}
+
+}
+
+FILE*p1;
+p1=fopen("dat2.txt","w");
+fclose(p1);
+printPostorder(rootb);
+
+rootb=NULL;
+}
+
+void search(int id3){
+struct nodeb *temp4;
+rootb=NULL;
+temp4=rootb;
+struct nodeb *p2;
+FILE *p;
+p=fopen("dat2.txt","a+");
+struct detail new1;
+struct nodeb *new3;
+
+while(1){
+
+fscanf(p,"%d\t%d\t%d\t%d\t%d",&new1.id1,&new1.diam1,&new1.velo1,&new1.pow1,&new1.c1);
+if(feof(p)){
+break;
+}
+new3=(struct nodeb*)malloc(sizeof(struct nodeb));
+
+new3->id3=new1.id1;
+new3->pow3=new1.pow1;
+new3->c3=new1.c1;
+new3->diam3=new1.diam1;
+new3->velo3=new1.velo1;
+new3->left=NULL;
+new3->rit=NULL;
+if(rootb==NULL){
+rootb=new3;
+
+}
+else{
+temp4=rootb;
+
+  while(temp4!=NULL){
+  p2=temp4;
+  if(new1.id1>temp4->id3){
+  temp4=temp4->rit;
+  }
+  else{
+  temp4=temp4->left;
+  }
+  }
+ 
+  if(new1.id1>p2->id3){
+  p2->rit=new3;
+ 
+  }
+ else{
+  p2->left=new3;
+ 
+ }
+ 
+}}
+fclose(p);
+struct nodeb *temp3;
+temp3=rootb;
+
+if(rootb==NULL){
+printf("no data\n");
+}
+else{
+while(temp3!=NULL){
+
+if(id3==temp3->id3){
+printf("location ID--%d\tturbine diameter--%d\twind velocity--%d\tFINAL power GENERATED--%d\tconserved power--%d\n",temp3->id3,temp3->diam3,temp3->velo3,temp3->pow3,temp3->c3);
+break;
+}
+else if(id3>temp3->id3){
+temp3=temp3->rit;
+}
+else if(id3<temp3->id3){
+temp3=temp3->left;
+}
+}
+
+if(temp3==NULL){
+printf("data not found\n");
+}
+
+}
+
+
+}
+
+main(){
+int x;
+
+while(1){
+printf("-----------------------press 1 to enter-----------------------\n-----------------------press2 to edit-----------------------\n-----------------------press 3 to rank display-----------------------\n-----------------------press 4 to search an id-----------------------\n----------------------------PRESS 5 TO DISPLAY-----------------------\n");
+scanf("%d",&x);
+if(x==1){
+enter();
+}
+
+else if(x==3){
+rank();
+}
+else if(x==4){
+int k;
+printf("enter the id to be searched\n");
+scanf("%d",&k);
+search(k);
+}
+
+else if(x==2){
+int k2;
+printf("enter the id to be edited\n");
+scanf("%d",&k2);
+edit(k2);
+}
+else if(x==5){
+disp();
+}
+else{
+break;
+}
+}
+}
